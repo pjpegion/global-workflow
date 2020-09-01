@@ -22,4 +22,8 @@ module load w3nco-intel/2.0.6
 module use /usrx/local/nceplibs/modulefiles
 module load bacio-intel/2.0.2
 
+module use /usrx/local/dev/modulefiles
+module load cmake/3.6.2
+module unuse /usrx/local/dev/modulefiles
+
 export FC=ftn
