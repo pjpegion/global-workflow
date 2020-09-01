@@ -31,3 +31,20 @@ cd build
 
 cmake ../
 make
+
+# re run make now to fix reproducibility issues
+# Check final exec folder exists
+if [ ! -d "../exec" ]; then
+  mkdir ../exec
+fi
+
+cd ${cwd}/enkf_chgres_recenter_nc.fd/src
+
+export FFLAGS="-O3 -qopenmp -traceback -fp-model precise"
+export FV3GFS_NCIO_LIB="${cwd}/enkf_chgres_recenter_nc.fd/build/lib/libfv3gfs_ncio.a"
+export FV3GFS_NCIO_INC="${cwd}/enkf_chgres_recenter_nc.fd/build/include"
+
+make clean
+make
+make install
+make clean
