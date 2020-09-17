@@ -25,6 +25,7 @@ config_fv3ic:
     export CPL_ICEIC={doc.ice_settings.CPL_ICEIC}
     export CPL_OCNIC={doc.ocn_settings.CPL_OCNIC}
     export CPL_WAVIC={doc.wave_settings.CPL_WAVIC}
+    export ENS_NUM="{doc.places.ENS_NUM}"
     
     echo "END: config.fv3ic"
     
