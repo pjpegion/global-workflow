@@ -607,7 +607,7 @@ MOM6_postdet()
 
 MOM6_nml()
 {
-	echo "SUB ${FUNCNAME[0]}: Creating name list for MOM6"
+	echo "SUB ${FUNCNAME[0]}: Creating name list for MOM6 "$OCN_INIT_TYPE
         source $SCRIPTDIR/parsing_namelists_MOM6.sh
         MOM6_namelists
 }
@@ -734,14 +734,23 @@ CICE_postdet()
           ICERESmx="mx050"
           ICERESdec="0.50"
         fi 
+        if [ $ICERES = '100' ]; then
+          ICERESmx="mx100"
+          ICERESdec="1.00"
+        fi 
 
         ice_grid_file=${ice_grid_file:-"grid_cice_NEMS_${ICERESmx}.nc"}
         ice_kmt_file=${ice_kmt_file:-"kmtu_cice_NEMS_${ICERESmx}.nc"}
 
-        iceic="cice5_model.res_$CDATE.nc"
-
 	# Copy CICE5 IC 
-        $NCP -p $ICSDIR/$CDATE/ice/cice5_model_${ICERESdec}.res_$CDATE.nc $DATA/$iceic
+        if [ $ICERES = '100' ]; then
+           iceic="cice5_model.ic.nc"
+           $NCP -p $ICSDIR/$CDATE/ice/cice5_model_${ICERESdec}.ic.nc $DATA/$iceic
+        else
+           iceic="cice5_model.res_$CDATE.nc"
+           $NCP -p $ICSDIR/$CDATE/ice/cice5_model_${ICERESdec}.res_$CDATE.nc $DATA/$iceic
+        fi
+
 
         echo "Link CICE fixed files"
         $NLN -sf $FIXcice/${ice_grid_file} $DATA/

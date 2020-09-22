@@ -164,7 +164,8 @@ config_base:
     elif [ "$CDUMP" == "gfs" ] ; then
         export FHCYC={doc.fv3_enkf_settings.FHCYC_GFS}
     fi
-    
+    # ocean initialization type (new runs should be "n")
+    export OCN_INIT_TYPE={doc.ocn_settings.OCN_INIT_TYPE}    
     # Output frequency of the forecast model (for cycling)
     export FHMIN={doc.output_settings.FHMIN_GDAS}
     export FHMAX={doc.output_settings.FHMAX_GDAS}

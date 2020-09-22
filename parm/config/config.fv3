@@ -59,7 +59,7 @@ case $case_in in
         export WRTTASK_PER_GROUP_GFS=24
         export WRTIOBUF="4M"
 if [ $cpl = ".true." ]; then
-        export OCNTIM=450
+        export OCNTIM=3600
         export layout_y=6
         export layout_y_gfs=6
         export WRTTASK_PER_GROUP=6

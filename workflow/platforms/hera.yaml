@@ -36,7 +36,8 @@ platform: !Platform
   BASE_GIT: "/scratch1/NCEPDEV/global/glopara/git/"
 
   #BASE_CPLIC - is the base directory of ICs for coupled s2s runs
-  BASE_CPLIC: "/scratch2/NCEPDEV/climate/climpara/S2S/IC"
+  #BASE_CPLIC: "/scratch2/NCEPDEV/climate/climpara/S2S/IC"
+  BASE_CPLIC: "/scratch2/BMC/gsienkf/Philip.Pegion/UFS-coupled/ICS"
   #ncks - NCO netcdf operator used in ocean post 
   ncks: "/apps/nco/4.9.1/intel/18.0.5.274/bin/ncks"
 

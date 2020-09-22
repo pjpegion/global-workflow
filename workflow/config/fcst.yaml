@@ -160,6 +160,8 @@ config_fcst:
     export sppt_logit=.TRUE.
     export sppt_sfclimit=.true.
     export use_zmtnblck=.true.
+    export k_split={doc.fv3_gfs_settings.k_split}  # model is unstable with k_split=2, n_split=6 and stochastic physics
+    export n_split={doc.fv3_gfs_settings.n_split} # make the model stable with k_split=1, n_split=12
 
     #---------------------------------------------------------------------
     # Disable the use of coupler.res; get model start time from model_configure

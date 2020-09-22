@@ -89,6 +89,7 @@ echo "MAIN: environment loaded for $machine platform,Current Script locates in $
 source $SCRIPTDIR/cplvalidate.sh	# validation of cpl*
 source $SCRIPTDIR/forecast_predet.sh	# include functions for variable definition
 source $SCRIPTDIR/forecast_det.sh  # include functions for run type determination
+echo "about to source forecast_postdet.sh" $OCN_INIT_TYPE
 source $SCRIPTDIR/forecast_postdet.sh	# include functions for variables after run type determination
 source $SCRIPTDIR/nems_configure.sh	# include functions for nems_configure processing
 source $SCRIPTDIR/parsing_model_configure_FV3.sh

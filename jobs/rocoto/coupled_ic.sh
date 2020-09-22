@@ -51,11 +51,11 @@ if [ $ICERES = '100' ]; then
 fi 
 
 if [ $ICERES = '100' ]; then # Phil's ics
-   # Setup ATM initial condition files
-   cp -r $ORIGIN_ROOT/C96_L64/$CDATE/$ENS_NUM $ICSDIR/$CDATE/
+   # Setup ATM initial condition files, -L is needed because sfc_data files are sym links
+   cp -r -L $ORIGIN_ROOT/C96_L64/$CDATE/$ENS_NUM $ICSDIR/$CDATE/INPUT
 
    # Setup Ocean IC files 
-   cp -r $ORIGIN_ROOT/mx${OCNRES}/$CDATE/MOM.mx${OCNRES}.ic.nc  $ICSDIR/$CDATE/ocn/
+   cp -r $ORIGIN_ROOT/mx${OCNRES}/$CDATE/MOM6.mx${OCNRES}.ic.nc  $ICSDIR/$CDATE/ocn/
 
    #Setup Ice IC files 
    cp $ORIGIN_ROOT/mx${ICERES}/$CDATE/cice5_model_${ICERESdec}.ic.nc $ICSDIR/$CDATE/ice/
@@ -79,7 +79,7 @@ if [ $cplwav = ".true." ]; then
 fi
 
 if [ $ICERES = '100' ]; then # Phil's ics
-   export OUTDIR="$ICSDIR/$CDATE"
+   export OUTDIR="$ICSDIR/$CDATE/INPUT"
 else
    export OUTDIR="$ICSDIR/$CDATE/$CDUMP/$CASE/INPUT"
 fi
@@ -89,13 +89,7 @@ COMOUT="$ROTDIR/$CDUMP.$PDY/$cyc"
 [[ ! -d $COMOUT ]] && mkdir -p $COMOUT
 cd $COMOUT || exit 99
 rm -rf INPUT
-if [ $ICERES = '100' ]; then # Phil's ics  
-   mkdir INPUT
-   cd INPUT
-   $NLN $OUTDIR/* .
-else
-   $NLN $OUTDIR .
-fi
+$NLN $OUTDIR .
 
 ##############################################################
 # Exit cleanly
