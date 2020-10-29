@@ -28,7 +28,7 @@ cat > ice_in <<eof
    dumpfreq_n     =  $dumpfreq_n
    dump_last      = .false.  
    bfbflag        = 'off'
-   diagfreq       = 6
+   diagfreq       = 24
    diag_type      = 'file'
    diag_file      = 'ice_diag.d'
    print_global   = .true.
@@ -39,11 +39,11 @@ cat > ice_in <<eof
    lonpnt(2)      = -45.
    dbug           = .false.
    histfreq       = 'm','d','h','x','x'
-   histfreq_n     =  0 , 0 , 6 , 1 , 1
+   histfreq_n     =  0 , 1 , 0 , 1 , 1
    hist_avg       = $cice_hist_avg
    history_dir    = './history/'
    history_file   = 'iceh'
-   write_ic       = .true.
+   write_ic       = .false
    incond_dir     = './history/'
    incond_file    = 'iceh_ic'
    version_name   = 'CICE_6.0.2'

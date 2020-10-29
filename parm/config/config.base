@@ -230,6 +230,8 @@ export SENDSDM="NO"
 export LEVS=65
 export CASE="@CASECTL@"
 export CASE_ENKF="@CASEENS@"
+export LONB_IMO="@LONB_IMO@"
+export LATB_JMO="@LATB_JMO@"
 
 # Surface cycle update frequency
 if [[ "$CDUMP" == "gdas" ]] ; then

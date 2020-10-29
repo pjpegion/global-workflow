@@ -37,6 +37,7 @@ config_post:
     
     # Post driver job that calls gfs_nceppost.sh and downstream jobs
     export POSTJJOBSH="$HOMEpost/jobs/JGLOBAL_NCEPPOST"
+    if [ $CASE != 'C96' ];then
     export GFSDOWNSH="$HOMEpost/ush/fv3gfs_downstream_nems.sh"
     export GFSDWNSH="$HOMEpost/ush/fv3gfs_dwn_nems.sh"
     

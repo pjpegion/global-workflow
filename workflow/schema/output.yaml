@@ -49,7 +49,6 @@ output_settings_template: !Template &output_settings_template
     type: string
     description: "Type of model output file"
 
-
   gfs_forecast_hours: 
     type: int list
 
@@ -70,3 +69,17 @@ output_settings_template: !Template &output_settings_template
 
   awips_20km_1p0_hours:
     type: int list
+
+  LONB_IMO:
+    type: int
+    description: Number of longitude points for output grid
+
+  LATB_JMO:
+    type: int
+    description: Number of latitude points for output grid
+
+  OUTPUT_HISTORY:
+    type: string
+
+  WRITE_DOPOST:
+    type: string

@@ -24,6 +24,7 @@ config_base:
     export cplflx="{doc.settings.cplflx}"
     export cplice="{doc.settings.cplice}"
     export cplwav="{doc.settings.cplwav}"
+    export OCNENS="{doc.settings.OCNENS}"
     export cplwav2atm="{doc.settings.cplwav2atm}"
     export print_esmf="{doc.settings.print_esmf}"
 
@@ -164,7 +165,8 @@ config_base:
     elif [ "$CDUMP" == "gfs" ] ; then
         export FHCYC={doc.fv3_enkf_settings.FHCYC_GFS}
     fi
-    
+    # ocean initialization type (new runs should be "n")
+    export OCN_INIT_TYPE={doc.ocn_settings.OCN_INIT_TYPE}    
     # Output frequency of the forecast model (for cycling)
     export FHMIN={doc.output_settings.FHMIN_GDAS}
     export FHMAX={doc.output_settings.FHMAX_GDAS}
@@ -186,7 +188,11 @@ config_base:
     # if gaussian_grid, set OUTPUT_FILE for nemsio or netcdf
     export QUILTING="{tools.fort(doc.fv3_gdas_settings.QUILTING)}"
     export OUTPUT_GRID="{doc.output_settings.OUTPUT_GRID}"
+    export LONB_IMO="{doc.output_settings.LONB_IMO}"
+    export LATB_JMO="{doc.output_settings.LATB_JMO}"
     export OUTPUT_FILE="{doc.output_settings.OUTPUT_FILE_TYPE}"
+    export OUTPUT_HISTORY="{doc.output_settings.OUTPUT_HISTORY}"
+    export WRITE_DOPOST="{doc.output_settings.WRITE_DOPOST}"
    
     # Microphysics Options: 99-ZhaoCarr, 8-Thompson; 6-WSM6, 10-MG, 11-GFDL
     export imp_physics={doc.fv3_gfs_settings.imp_physics}

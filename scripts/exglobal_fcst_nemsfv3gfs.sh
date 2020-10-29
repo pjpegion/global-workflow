@@ -110,6 +110,8 @@ ICETIM=${DELTIM}
 
 CPL_SLOW=${CPL_SLOW:-$OCNTIM}
 CPL_FAST=${CPL_FAST:-$ICETIM}
+FHRGRP=${FHRGRP:--999}
+
 
 echo "MAIN: $confignamevarfornems selected"
 echo "MAIN: Forecast script started for $confignamevarfornems on $machine"

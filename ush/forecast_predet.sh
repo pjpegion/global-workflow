@@ -150,7 +150,7 @@ FV3_GFS_predet(){
 	JCAP=${JCAP:-$JCAP_CASE}
 	LONB=${LONB:-$LONB_CASE}
 	LATB=${LATB:-$LATB_CASE}
-
+        echo 'LONB_IMO, LATB_JMO = ' $LONB_IMO' '$LATB_JMO
 	LONB_IMO=${LONB_IMO:-$LONB_CASE}
 	LATB_JMO=${LATB_JMO:-$LATB_CASE}
 
@@ -196,7 +196,8 @@ FV3_GFS_predet(){
 	fi
         cd $DATA || exit 8
         mkdir -p $DATA/INPUT
-        if [ $CDUMP = "gfs" -a $restart_interval -gt 0 ]; then
+        #if [ $CDUMP = "gfs" -a $restart_interval -gt 0 ]; then
+        if [ $CDUMP = "gfs" ] && [ $restart_interval -gt 0 ]; then
             RSTDIR_TMP=${RSTDIR:-$ROTDIR}/${CDUMP}.${PDY}/${cyc}/RERUN_RESTART
             if [ ! -d $RSTDIR_TMP ]; then mkdir -p $RSTDIR_TMP ; fi
             $NLN $RSTDIR_TMP RESTART

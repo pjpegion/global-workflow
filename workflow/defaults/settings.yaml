@@ -47,6 +47,7 @@ default_settings: &default_settings
   cplflx: .false.
   cplice: !calc cplflx
   cplwav: .false.
+  OCNENS: .false.
   cplwav2atm: .false.
   cplchem: .false.
   cpl: !FirstTrue

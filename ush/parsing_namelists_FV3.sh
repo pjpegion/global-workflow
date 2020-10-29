@@ -193,7 +193,7 @@ cat >> input.nml <<EOF
 /
 
 &gfs_physics_nml
-  fhzero       = $FHZER
+  fhzero       = $FHOUT
   h2o_phys     = ${h2o_phys:-".true."}	! CROW configured
   ldiag3d      = ${ldiag3d:-".false."}
   fhcyc        = $FHCYC			! CROW configured

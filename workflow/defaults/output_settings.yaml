@@ -23,6 +23,10 @@ output_settings_defaults: &output_settings_defaults
   NCO_NAMING_CONV: YES
   OUTPUT_FILE_TYPE: nemsio
   OUTPUT_GRID: gaussian_grid
+  OUTPUT_HISTORY: .true.
+  WRITE_DOPOST: .false.
+  LONB_IMO: 1536
+  LATB_JMO: 738 
 
   gfs_forecast_hours: !calc >-
       tools.uniq(sorted(

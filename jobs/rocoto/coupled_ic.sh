@@ -49,15 +49,35 @@ fi
 if [ $ICERES = '050' ]; then         
  ICERESdec="0.50"        
 fi 
+if [ $ICERES = '100' ]; then         
+ ICERESdec="1.00"        
+fi 
 
 # Setup ATM initial condition files
-cp -r $ORIGIN_ROOT/$CPL_ATMIC/$CDATE/$CDUMP  $ICSDIR/$CDATE/
+if [ $MEMBER -le 0 ]; then
+   cp -r $ORIGIN_ROOT/$CPL_ATMIC/$CDATE/$CDUMP  $ICSDIR/$CDATE/
+else
+   charnanal=mem`printf %3.3i $MEMBER`
+   cp -r -L $ORIGIN_ROOT/${CASE}_L64/$CDATE/$charnanal $ICSDIR/$CDATE/INPUT
+fi
 
 # Setup Ocean IC files 
-cp -r $ORIGIN_ROOT/$CPL_OCNIC/$CDATE/ocn/$OCNRES/MOM*.nc  $ICSDIR/$CDATE/ocn/
+if [ $MEMBER -le 0 ]; then
+   cp -r $ORIGIN_ROOT/$CPL_OCNIC/$CDATE/ocn/$OCNRES/MOM*.nc  $ICSDIR/$CDATE/ocn/
+else
+   if [ $OCNENS = ".true." ]; then
+      cp -r $ORIGIN_ROOT/mx${OCNRES}/$CDATE/${charnanal}/MOM6.mx${OCNRES}.ic.nc  $ICSDIR/$CDATE/ocn/
+   else
+      cp -r $ORIGIN_ROOT/mx${OCNRES}/$CDATE/MOM6.mx${OCNRES}.ic.nc  $ICSDIR/$CDATE/ocn/
+   fi
+fi
 
 #Setup Ice IC files 
-cp $ORIGIN_ROOT/$CPL_ICEIC/$CDATE/ice/$ICERES/cice5_model_${ICERESdec}.res_$CDATE.nc $ICSDIR/$CDATE/ice/
+if [ $ICERES = '100' ]; then # Phil's ics
+   cp $ORIGIN_ROOT/mx${ICERES}/$CDATE/cice5_model_${ICERESdec}.ic.nc $ICSDIR/$CDATE/ice/cice5_model_${ICERESdec}.res_$CDATE.nc
+else
+   cp $ORIGIN_ROOT/$CPL_ICEIC/$CDATE/ice/$ICERES/cice5_model_${ICERESdec}.res_$CDATE.nc $ICSDIR/$CDATE/ice/
+fi
 
 if [ $cplwav = ".true." ]; then
   [[ ! -d $ICSDIR/$CDATE/wav ]] && mkdir -p $ICSDIR/$CDATE/wav
@@ -67,7 +87,12 @@ if [ $cplwav = ".true." ]; then
   done
 fi
 
-export OUTDIR="$ICSDIR/$CDATE/$CDUMP/$CASE/INPUT"
+if [ $MEMBER -le 0 ]; then
+   export OUTDIR="$ICSDIR/$CDATE/$CDUMP/$CASE/INPUT"
+else # phil's ensemble ics
+   export OUTDIR="$ICSDIR/$CDATE/INPUT"
+fi
+
 
 # Stage the FV3 initial conditions to ROTDIR
 COMOUT="$ROTDIR/$CDUMP.$PDY/$cyc"

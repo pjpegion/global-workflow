@@ -410,25 +410,54 @@ EOF
         if [ $inistep = 'cold' ]; then
           echo "Not making links of output for mediator cold start" 
         else 
-	if [ $QUILTING = ".true." -a $OUTPUT_GRID = "gaussian_grid" ]; then
-	  fhr=$FHMIN
-	  while [ $fhr -le $FHMAX ]; do
-	    FH3=$(printf %03i $fhr)
-	    atmi=atmf${FH3}.$OUTPUT_FILE
-	    sfci=sfcf${FH3}.$OUTPUT_FILE
-	    logi=logf${FH3}
-	    atmo=$memdir/${CDUMP}.t${cyc}z.atmf${FH3}.$OUTPUT_FILE
-	    sfco=$memdir/${CDUMP}.t${cyc}z.sfcf${FH3}.$OUTPUT_FILE
-	    logo=$memdir/${CDUMP}.t${cyc}z.logf${FH3}.$OUTPUT_FILE
-	    eval $NLN $atmo $atmi
-	    eval $NLN $sfco $sfci
-	    eval $NLN $logo $logi
-	    FHINC=$FHOUT
-	    if [ $FHMAX_HF -gt 0 -a $FHOUT_HF -gt 0 -a $fhr -lt $FHMAX_HF ]; then
-	      FHINC=$FHOUT_HF
-	    fi
-	    fhr=$((fhr+FHINC))
-	  done
+	#if [ $QUILTING = ".true." -a $OUTPUT_GRID = "gaussian_grid" ]; then
+	if [ $QUILTING = ".true." ]; then
+           if [ $OUTPUT_HISTORY = ".true." ];then
+	      fhr=$FHMIN
+	      while [ $fhr -le $FHMAX ]; do
+	        FH3=$(printf %03i $fhr)
+	        atmi=atmf${FH3}.$OUTPUT_FILE
+	        sfci=sfcf${FH3}.$OUTPUT_FILE
+	        logi=logf${FH3}
+	        atmo=$memdir/${CDUMP}.t${cyc}z.atmf${FH3}.$OUTPUT_FILE
+	        sfco=$memdir/${CDUMP}.t${cyc}z.sfcf${FH3}.$OUTPUT_FILE
+	        logo=$memdir/${CDUMP}.t${cyc}z.logf${FH3}.$OUTPUT_FILE
+	        eval $NLN $atmo $atmi
+	        eval $NLN $sfco $sfci
+	        eval $NLN $logo $logi
+	        FHINC=$FHOUT
+	        if [ $FHMAX_HF -gt 0 -a $FHOUT_HF -gt 0 -a $fhr -lt $FHMAX_HF ]; then
+	          FHINC=$FHOUT_HF
+	        fi
+	        fhr=$((fhr+FHINC))
+	      done
+           fi
+           if [ $WRITE_DOPOST = ".true." ];then
+	      fhr=$FHMIN
+	      while [ $fhr -le $FHMAX ]; do
+	        FH2=$(printf %02i $fhr)
+	        FH3=$(printf %03i $fhr)
+	        atmi=GFSPRS.GrbF${FH2}
+	        sfci=GFSFLX.GrbF${FH2}
+	        logi=logf${FH3}
+	        atmo=$memdir/GFSPRS.GrbF${FH2}
+	        sfco=$memdir/GFSFLX.GrbF${FH2}
+	        logo=$memdir/${CDUMP}.t${cyc}z.logf${FH3}.$OUTPUT_FILE
+	        eval $NLN $atmo $atmi
+	        eval $NLN $sfco $sfci
+	        eval $NLN $logo $logi
+	        FHINC=$FHOUT
+	        if [ $FHMAX_HF -gt 0 -a $FHOUT_HF -gt 0 -a $fhr -lt $FHMAX_HF ]; then
+	          FHINC=$FHOUT_HF
+	        fi
+	        fhr=$((fhr+FHINC))
+	      done
+              # link input files for inline post
+              eval $NLN $HOMEgfs/parm/post/postxconfig-NT-GFS.txt postxconfig-NT_FH00.txt
+              eval $NLN $HOMEgfs/parm/post/postxconfig-NT-GFS.txt postxconfig-NT.txt
+              eval $NLN $POSTGRB2TBL .
+
+	   fi
 	else
 	  for n in $(seq 1 $ntiles); do
 	    eval $NLN nggps2d.tile${n}.nc       $memdir/nggps2d.tile${n}.nc
@@ -671,15 +700,16 @@ MOM6_out()
 	      export ocnfile=ocn_${year}_${month}_${day}_${hh}.nc
 
 	      echo "$NCP -p $ocnfile $COMOUT/ocn$p_date.$ENSMEM.$IDATE.nc"
-	      $NCP -p $ocnfile $COMOUT/ocn$p_date.$ENSMEM.$IDATE.nc
+	      #$NCP -p $ocnfile $COMOUT/ocn$p_date.$ENSMEM.$IDATE.nc
+	      $NCP -p $ocnfile $COMOUT/ocn_${p_date}.nc
 	      status=$?
 	      [[ $status -ne 0 ]] && exit $status
              
 	    fi
        
 	  done
-          $NCP -p $DATA/ocn_daily*nc $COMOUT/
-          $NCP -p $DATA/wavocn*nc $COMOUT/ #temporary for p4
+          #$NCP -p $DATA/ocn_daily*nc $COMOUT/
+          #$NCP -p $DATA/wavocn*nc $COMOUT/ #temporary for p4
           $NCP -p $DATA/INPUT/MOM_input $COMOUT/
         fi
 }
@@ -735,6 +765,10 @@ CICE_postdet()
           ICERESmx="mx050"
           ICERESdec="0.50"
         fi 
+        if [ $ICERES = '100' ]; then
+          ICERESmx="mx100"
+          ICERESdec="1.00"
+        fi 
 
         ice_grid_file=${ice_grid_file:-"grid_cice_NEMS_${ICERESmx}.nc"}
         ice_kmt_file=${ice_kmt_file:-"kmtu_cice_NEMS_${ICERESmx}.nc"}
@@ -745,9 +779,9 @@ CICE_postdet()
         $NCP -p $ICSDIR/$CDATE/ice/cice5_model_${ICERESdec}.res_$CDATE.nc $DATA/$iceic
 
         echo "Link CICE fixed files"
-        $NLN -sf $FIXcice/${ice_grid_file} $DATA/
-        $NLN -sf $FIXcice/${ice_kmt_file} $DATA/
-        $NLN -sf $FIXcice/$MESHICE $DATA/
+        $NLN -sf $FIXcice/$ICERES/${ice_grid_file} $DATA/
+        $NLN -sf $FIXcice/$ICERES/${ice_kmt_file} $DATA/
+        $NLN -sf $FIXcice/$ICERES/$MESHICE $DATA/
 }
 
 CICE_nml()
@@ -790,16 +824,17 @@ CICE_out()
 	  HH=`echo $VDATE | cut -c9-10`
 	  SS=$((10#$HH*3600))
 
-	  if [[ 10#$fhr -eq 0 ]]; then
-	    $NCP -p $DATA/history/iceh_ic.${YYYY0}-${MM0}-${DD0}-`printf "%5.5d" ${SS0}`.nc $COMOUT/iceic$VDATE.$ENSMEM.$IDATE.nc
+	  #if [[ 10#$fhr -eq 0 ]]; then
+	  #  $NCP -p $DATA/history/iceh_ic.${YYYY0}-${MM0}-${DD0}-`printf "%5.5d" ${SS0}`.nc $COMOUT/iceic$VDATE.$ENSMEM.$IDATE.nc
+	  #  status=$?
+	  #  [[ $status -ne 0 ]] && exit $status
+	  #  echo "fhr is 0, only copying ice initial conditions... exiting"
+	  #else
+	  #  $NCP -p $DATA/history/iceh_`printf "%0.2d" $FHOUT`h.${YYYY}-${MM}-${DD}-`printf "%5.5d" ${SS}`.nc $COMOUT/ice$VDATE.$ENSMEM.$IDATE.nc
+	    $NCP -p $DATA/history/iceh.${YYYY}-${MM}-${DD}.nc $COMOUT/iceh_${VDATE}.nc
 	    status=$?
 	    [[ $status -ne 0 ]] && exit $status
-	    echo "fhr is 0, only copying ice initial conditions... exiting"
-	  else
-	    $NCP -p $DATA/history/iceh_`printf "%0.2d" $FHOUT`h.${YYYY}-${MM}-${DD}-`printf "%5.5d" ${SS}`.nc $COMOUT/ice$VDATE.$ENSMEM.$IDATE.nc
-	    status=$?
-	    [[ $status -ne 0 ]] && exit $status
-	  fi
+	  #fi
 
 	done
         fi
