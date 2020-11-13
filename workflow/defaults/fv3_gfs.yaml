@@ -47,6 +47,8 @@ fv3_gfs_defaults: &fv3_gfs_defaults
       message: "Newly defined CASE, please make sure cdmbgwd is set correctly in case file under fv3_gfs_settings!"
 
   DELTIM: !FirstTrue
+    - when: !calc CASE=="C96"
+      do: 900
     - when: !calc CASE=="C384"
       do: 240
     - when: !calc CASE=="C768"

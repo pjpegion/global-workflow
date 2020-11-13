@@ -1,0 +1,70 @@
+case:
+  places:
+    workflow_file: layout/free_forecast_gfs_no_post.yaml
+    BASE_CPLIC: /work/noaa/gsienkf/ppegion/UFS-coupled/ICS
+
+  settings: 
+    SDATE: 2012-01-01t00:00:00
+    EDATE: 2012-01-01t00:00:00
+
+    onestep: .true.
+    cplwav: .false.
+    cplwav2atm: .false.
+    cplflx: .true.
+    print_esmf: .true.
+    nems_temp: 'med_atm_ocn_ice'
+    nems_temp_cold: 'medcold_atm_ocn_ice'
+    mom6ic_prepared: .false.
+    KEEPDATA: YES
+
+  nsst:
+    NST_MODEL: 0
+
+  output_settings:
+    OCN_INTERVAL: 24
+    FHOUT_GFS: 6 
+    FHMIN_GFS: 0
+    FHMAX_GFS: 24 
+    FHMAX_HF_GFS: 0
+    FHOUT_HF_GFS: -1
+    OUTPUT_GRID: 'global_latlon'
+    LONB_IMO: 360
+    LATB_JMO: 181
+    OUTPUT_HISTORY: .false.
+    WRITE_DOPOST: .true.
+
+  fv3_gfs_settings:
+    CASE: C96
+    LEVS: 65
+    DELTIM: 900
+    OCNTIM: 3600
+    SEEDLET: 10
+    MEDPETS: 32
+    CCPP_SUITE: FV3_GFS_v15p2_coupled
+    nst_anl: no
+    DO_SKEB: false
+    DO_SHUM: false
+    DO_SPPT: false
+    layout:
+       x: 2
+       y: 2
+       nth: 1
+       WGRP: 1
+       WGRP_NTASKS: 8
+       WRTIOBUF: "32M"
+    cdmbgwd: "0.125,3.0"
+
+  ocn_settings:
+    OCNPETS: 40
+    OCNRES: "100"
+    OCN_INIT_TYPE: "n"
+
+  ice_settings:
+    ICEPETS: 8
+    NX_GLB: 360
+    NY_GLB: 320
+    ICERES: "100"
+
+  post:
+    downset: 2
+    GOESF: no

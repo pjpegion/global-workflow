@@ -22,6 +22,7 @@ config_fv3ic:
 
     export ORIGIN_ROOT="{doc.places.BASE_CPLIC}"
     export CPL_ATMIC={doc.fv3_gfs_settings.CPL_ATMIC}
+    export MEMBER="{doc.fv3_gfs_settings.MEMBER}"
     export CPL_ICEIC={doc.ice_settings.CPL_ICEIC}
     export CPL_OCNIC={doc.ocn_settings.CPL_OCNIC}
     export CPL_WAVIC={doc.wave_settings.CPL_WAVIC}

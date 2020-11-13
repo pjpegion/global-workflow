@@ -7,7 +7,7 @@ MOM6_namelists(){
 
 &MOM_input_nml
   output_directory = 'MOM6_OUTPUT/',
-  input_filename = 'r'
+  input_filename = ${OCN_INIT_TYPE:-"r"}
   restart_input_dir = 'INPUT/',
   restart_output_dir = 'MOM6_RESTART/',
   parameter_filename = 'INPUT/MOM_input',

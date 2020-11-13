@@ -123,16 +123,10 @@ platform: !Platform
 
   # long_term_temp - area for storage of data that must be passed
   # between jobs or shared with programs external to this workflow.
-  COMROOT: !FirstTrue
-       - do: !expand "{doc.user_places.COMROOT}"
-         when: !calc doc.user_places.FIX_SCRUB
-       - otherwise: !expand "{doc.platform.least_used_temp}/{tools.env('USER')}"
+  COMROOT: !expand "{doc.user_places.COMROOT}"
 
   # short_term_temp - area for data that is only needed within one job:
-  DATAROOT: !FirstTrue
-       - do: !expand "{doc.user_places.DATAROOT}"
-         when: !calc doc.user_places.FIX_SCRUB
-       - otherwise: !expand "{doc.platform.least_used_temp}/{tools.env('USER')}"
+  DATAROOT: !expand "{doc.user_places.DATAROOT}"
 
   # EXPROOT - Parent directory  of the expdir (experiment directory)
   EXPROOT: !expand "{doc.user_places.EXPROOT}"

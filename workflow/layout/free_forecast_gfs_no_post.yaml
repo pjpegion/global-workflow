@@ -1,0 +1,130 @@
+suite: !Cycle
+  <<: *suite_defaults
+
+  Alarms:
+    <<: *cycled_suite_alarms
+
+  #####################################################################
+  ## ICS FAMILY #######################################################
+  #####################################################################
+
+  ics: !Family
+    Disable: !calc >-
+      doc.settings.get("IC_CDUMP","") and not doc.settings.chgres_and_convert_ics or doc.settings.mom6ic_prepared=='.true.'
+#    RUN: 'gfs'
+    jgfs_emc_getics: !Task
+      <<: *service_task_template
+      RUN: 'gfs'
+#      Disable: !calc doc.settings.get("IC_CDUMP","")
+      Disable: !calc doc.settings.get("IC_CDUMP","") or doc.settings.cpl=='.true.' or doc.settings.ic_source=='coupled_ic'
+      resources: !calc partition.resources.run_getic
+      J_JOB: rocoto/getic.sh
+      ecf_module_commands: "# getics.sh will load modules instead"
+      model: gfs
+
+    jgfs_emc_fv3ic: !Task
+      <<: *exclusive_task_template
+      RUN: 'gfs'
+#      Disable: !calc not doc.settings.chgres_and_convert_ics
+      Disable: !calc doc.settings.chgres_and_convert_ics=='.false.' or doc.settings.cpl=='.true.' or doc.settings.ic_source=='coupled_ic'
+      Trigger: !Depend jgfs_emc_getics
+      resources: !calc partition.resources.run_fv3ic
+      J_JOB: rocoto/crow_fv3ic.sh
+      ecf_module_commands: "# fv3ic.sh will load modules instead"
+      model: gfs
+
+    jgfs_emc_mom6ic: !Task
+      <<: *exclusive_task_template
+      RUN: 'gfs'
+      Disable: !calc doc.settings.cplflx=='.false.' and not doc.settings.chgres_and_convert_ics and doc.settings.ic_source=='fv3_ic'
+      Trigger: !Depend jgfs_emc_getics
+      resources: !calc partition.resources.run_fv3ic
+      J_JOB: rocoto/coupled_ic.sh
+      ecf_module_commands: "# fv3ic.sh will load modules instead"
+      model: gfs
+
+  #####################################################################
+  ## GFS FAMILY #######################################################
+  #####################################################################
+
+  gfs: !Family
+#    AlarmName: gdas                    ##!!"gdas" mean to run every 6 hrs from sdate to edate!!"
+    RUN: 'gfs'
+    ecflow_def: "edit RUN 'gfs'"
+
+    prep: !Family
+      Disable: !calc doc.settings.cplwav=='.false.'
+
+      waveinit: !Task
+        <<: *exclusive_task_template
+        Trigger: !Depend up.up.ics.jgfs_emc_mom6ic
+        resources: !calc partition.resources.run_prep
+        J_JOB: rocoto/waveinit.sh
+
+      waveprep: !Task
+        <<: *exclusive_task_template
+        Trigger: !Depend waveinit
+        resources: !calc partition.resources.run_prep
+        J_JOB: rocoto/waveprep.sh
+
+    forecast: !Family
+      medcold: !Task
+        <<: *exclusive_task_template
+        Disable: !calc doc.settings.cplflx == '.false.' or doc.settings.onestep == '.true.'
+        Trigger: !FirstTrue
+           - when: !calc doc.settings.cplwav=='.true.'
+             do: !Depend up.prep
+           - otherwise: !Depend up.up.ics.jgfs_emc_mom6ic
+        resources_remap: !JobRequest [ { <<: *remap_resource_template } ]
+        resources: !calc partition.resources.run_coupled_medcold
+        J_JOB: JGLOBAL_FORECAST_MEDCOLD
+
+      highres: !Task
+        <<: *exclusive_task_template
+        Trigger: !FirstTrue
+           - when: !calc doc.settings.cplflx=='.true.' and doc.settings.onestep=='.false.'
+             do: !Depend medcold
+           - when: !calc doc.settings.cplwav=='.true.'
+             do: !Depend up.prep
+           - otherwise: !Depend up.up.ics.jgfs_emc_mom6ic
+        resources_remap: !JobRequest [ { <<: *remap_resource_template } ]
+        resources: !FirstTrue
+           - when: !calc doc.settings.cplflx=='.true.'
+             do: !calc partition.resources.run_coupled_fcst
+           - otherwise: !calc partition.resources.run_gfsfcst
+        J_JOB: JGLOBAL_FORECAST
+
+
+  #######################################################################
+  ## ARCHIVE FAMILY #####################################################
+  #######################################################################
+
+  archive: !Family
+    Disable: !calc not doc.archiving.archive_to_hpss
+    ecflow_def:
+      edit ECF_TRIES '3'
+
+    jgfs_archive: !Task
+      <<: *service_task_template
+      Disable: !calc doc.settings.gfs_cyc == 0
+      AlarmName: gfs
+      Trigger: !Depend up.gfs
+      resources: !calc partition.resources.run_arch
+      ecf_environment_settings: !calc doc.settings.ecflow_rocoto_cdate_workaround
+      J_JOB: rocoto/arch.sh
+      ecf_module_commands: "# arch.sh will load modules instead"
+      RUN: gfs
+      ecflow_def: !FirstTrue
+        - when: !calc doc.settings.four_cycle_mode
+          take: "edit RUN 'gfs'"
+        - otherwise: |
+            time +00:10
+            edit RUN 'gfs'
+
+  final: !Task
+    <<: *service_task_template
+    Disable: !calc not metasched.type=="rocoto"
+    resources: !calc partition.resources.run_final
+    rocoto_command: /bin/true
+    model: gfs # useless but required
+
