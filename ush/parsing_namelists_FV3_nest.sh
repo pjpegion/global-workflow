@@ -336,6 +336,7 @@ EOF
   do_ugwp      = ${do_ugwp:-".false."}
   do_tofd      = ${do_tofd:-".false."}
   gwd_opt      = ${gwd_opt:-"2"}
+  do_ngw_ec    =${do_ngw_ec:-".false."}
   do_ugwp_v0   = ${do_ugwp_v0:-".false."}
   do_ugwp_v1   = ${do_ugwp_v1:-".true."}
   do_ugwp_v0_orog_only = ${do_ugwp_v0_orog_only:-".false."}

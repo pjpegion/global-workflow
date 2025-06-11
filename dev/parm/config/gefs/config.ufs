@@ -109,12 +109,12 @@ case "${fv3_res}" in
         export rf_cutoff=100.0
         export fv_sg_adj=1800
         export WRITE_GROUP=1
-        export WRTTASK_PER_GROUP_PER_THREAD_PER_TILE=1
+        export WRTTASK_PER_GROUP_PER_THREAD_PER_TILE=2
         ;;
     "C192")
         export DELTIM=600
-        export layout_x=8
-        export layout_y=8
+        export layout_x=12
+        export layout_y=6
         export nthreads_fv3=1
         export nthreads_ufs=1
         export cdmbgwd="0.23,1.5,1.0,1.0"  # mountain blocking, ogwd, cgwd, cgwd src scaling
@@ -297,7 +297,7 @@ if [[ "${skip_mom6}" == "false" ]]; then
       TOPOEDITS=""
       ;;
     "100")
-      ntasks_mom6=20
+      ntasks_mom6=34
       OCNTIM=3600
       NX_GLB=360
       NY_GLB=320
@@ -355,7 +355,7 @@ if [[ "${skip_mom6}" == "false" ]]; then
       TOPOEDITS=""
       ;;
     "025")
-      ntasks_mom6=220
+      ntasks_mom6=312
       OCNTIM=1800
       NX_GLB=1440
       NY_GLB=1080
