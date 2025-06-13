@@ -540,22 +540,22 @@ FV3_predet(){
 #   local month mm
       for (( month = 1; month <=12; month++ )); do
         mm=$(printf %02d "${month}")
-        ${NCP} "${FIXgfs}/aer/20220805/merra2.aerclim.2014-2023.m${mm}.nc" "aeroclim.m${mm}.nc"
+        cpreq "${FIXgfs}/aer/20220805/merra2.aerclim.2014-2023.m${mm}.nc" "aeroclim.m${mm}.nc"
       done
     elif [[ "${MERRA2_6ym}" == ".true." ]]; then
       year=${current_cycle:0:4}
       for i in {1980..2300..5}
       do
-        if [ $year -le $i ]
+        if [[ ${year} -le ${i} ]]
         then
           Eyear=$(printf %04d "${i}")
-          Syear=$(($i-5))
+          Syear=$(( i - 5 ))
           break
         fi
       done
       for (( month = 1; month <=12; month++ )); do
         mm=$(printf %02d "${month}")
-        ${NCP} "${FIXgfs}/aer/20250529/y${Syear}-${Eyear}/merra2_${Syear}-${Eyear}_${mm}.nc" "aeroclim.m${mm}.nc"
+        cpreq "${FIXgfs}/aer/20250529/y${Syear}-${Eyear}/merra2_${Syear}-${Eyear}_${mm}.nc" "aeroclim.m${mm}.nc"
       done
     fi # if [[ "${MERRA2_6ym}" == ".true." ]];
   fi  # if (( IAER == 1011 ))
