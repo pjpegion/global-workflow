@@ -13,7 +13,7 @@ __all__ = ['Tasks']
 class Tasks:
     SERVICE_TASKS = ['arch_vrfy', 'earc_vrfy', 'stage_ic', 'cleanup', 'globus', 'ens_globus']
     DTN_TASKS = ['arch_tars', 'earc_tars', 'fetch']
-    VALID_TASKS = ['aerosol_init', 'stage_ic', 'fetch', 'globus', 'ens_globus',
+    VALID_TASKS = ['aerosol_init', 'stage_ic', 'gen_control_ic', 'fetch', 'globus', 'ens_globus',
                    'prep_sfc', 'prep', 'anal', 'sfcanl', 'analcalc', 'analdiag', 'arch_vrfy', 'arch_tars', 'cleanup',
                    'ecen_fv3jedi', 'analcalc_fv3jedi',
                    'prepatmiodaobs', 'atmanlinit', 'atmanlvar', 'atmanlfv3inc', 'atmanlfinal',
@@ -188,9 +188,9 @@ class Tasks:
             local_config['FHOUT'] = config['FHOUT_ICE']
 
         if component in ['wave']:
-            local_config['FHOUT_HF_GFS'] = config['FHOUT_HF_WAV']
             local_config['FHMAX_HF_GFS'] = config['FHMAX_HF_WAV']
-            local_config['FHOUT_GFS'] = config['FHOUT_WAV']
+            local_config['FHOUT_HF_GFS'] = config['FHOUT_HF_WAV']
+            local_config['FHOUT_GFS'] = config['FHOUT_WAV_GFS']
             local_config['FHOUT'] = config['FHOUT_WAV']
 
         fhmin = local_config['FHMIN']
