@@ -245,8 +245,19 @@ FV3_predet(){
   LONB=${LONB:-${LONB_CASE}}
   LATB=${LATB:-${LATB_CASE}}
 
-  LONB_IMO=${LONB_IMO:-${LONB_CASE}}
-  LATB_JMO=${LATB_JMO:-${LATB_CASE}}
+  #LONB_IMO=${LONB_IMO:-${LONB_CASE}}
+  #LATB_JMO=${LATB_JMO:-${LATB_CASE}}
+  # for SFS runs
+  if [ $res -eq 96 ];then
+     LONB_IMO=360
+     LATB_JMO=181
+  elif [ $res -eq 192 ];then
+     LONB_IMO=720
+     LATB_JMO=361
+  else
+     LONB_IMO=${LONB_IMO:-${LONB_CASE}}
+     LATB_JMO=${LATB_JMO:-${LATB_CASE}}
+  fi
 
   # NSST Options
   # nstf_name contains the NSST related parameters
